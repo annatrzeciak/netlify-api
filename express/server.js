@@ -5,6 +5,7 @@ const serverless = require('serverless-http');
 const app = express();
 const bodyParser = require('body-parser');
 const db = require("./models");
+const cors = require('cors');
 
 db.mongoose
   .connect(db.url, {
@@ -18,11 +19,7 @@ db.mongoose
     console.log("Cannot connect to the database!", err);
     process.exit();
   });
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
 
-// parse application/json
-app.use(bodyParser.json())
 
 const router = express.Router();
 router.get('/', (req, res) => {
@@ -31,11 +28,18 @@ router.get('/', (req, res) => {
   res.end();
 });
 
-require("./routes/auth.routes")(app);
-require("./routes/contest.routes")(app);
-require("./routes/game.routes")(app);
-require("./routes/user.routes")(app);
 
+router.use('/api/auth', require('./routes/auth.routes'));
+router.use('/api/users', require('./routes/user.routes'));
+router.use('/api/contests', require('./routes/contest.routes'));
+router.use('/api/games', require('./routes/game.routes'));
+
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.use('/.netlify/functions/server', router);  // path must route to lambda
 app.use('/', (req, res) => res.sendFile(path.join(__dirname, '../index.html')));
