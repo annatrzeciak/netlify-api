@@ -8,7 +8,7 @@ verifyToken = (req, res, next) => {
   const authorization = req.headers.authorization;
 console.log(req.headers.authorization)
 console.log(req.headers)
-  const token = authorization? authorization?.split(" ")[1]: null;
+  const token = authorization? authorization.split(" ")[1]: null;
 
   if (!token) {
     return res.status(401).send({ message: "No token provided!" });
