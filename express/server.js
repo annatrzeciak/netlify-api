@@ -34,6 +34,7 @@ router.use('/api/users', require('./routes/user.routes'));
 router.use('/api/contests', require('./routes/contest.routes'));
 router.use('/api/games', require('./routes/game.routes'));
 
+router.get('/another', (req, res) => res.json({ route: req.originalUrl }));
 
 app.use(cors());
 app.use(bodyParser.json());
